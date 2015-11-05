@@ -62,15 +62,6 @@ namespace SIM.Tool.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose installation package.
-        /// </summary>
-        internal static string ChooseInstallationPackage {
-            get {
-                return ResourceManager.GetString("ChooseInstallationPackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure that you want to delete the {0} instance?.
         /// </summary>
         internal static string ConfirmDeleteInstance {
@@ -121,15 +112,6 @@ namespace SIM.Tool.Properties {
         internal static string FolderNotEmpty {
             get {
                 return ResourceManager.GetString("FolderNotEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The installer isn&apos;t ready - check the Settings window.
-        /// </summary>
-        internal static string InstallerNotReady {
-            get {
-                return ResourceManager.GetString("InstallerNotReady", resourceCulture);
             }
         }
         

@@ -35,30 +35,6 @@
 
     #region Public properties
 
-    [NotNull]
-    public ConnectionStringCollection ConnectionStrings
-    {
-      get
-      {
-        XmlElementEx connectionStringsNode = this.GetConnectionStringsElement();
-        return GetConnectionStringCollection(connectionStringsNode);
-      }
-    }
-
-    #endregion
-
-    #region Private methods
-
-    private static ConnectionStringCollection GetConnectionStringCollection(XmlElementEx connectionStringsNode)
-    {
-      ConnectionStringCollection connectionStrings = new ConnectionStringCollection(connectionStringsNode);
-      XmlNodeList addNodes = connectionStringsNode.Element.ChildNodes;
-      connectionStrings.AddRange(
-        addNodes.OfType<XmlElement>().Select(element => new ConnectionString(element, connectionStringsNode.Document)));
-
-      return connectionStrings;
-    }
-
     #endregion
 
     #endregion
@@ -108,13 +84,6 @@
     #endregion
 
     #region Public methods
-
-    public static ConnectionStringCollection GetConnectionStrings(string webRootPath)
-    {
-      XmlElementEx connectionStringsNode = GetConnectionStringsElement(XmlDocumentEx.LoadFile(Path.Combine(webRootPath, "web.config")));
-      return GetConnectionStringCollection(connectionStringsNode);
-    }
-
     #endregion
   }
 }

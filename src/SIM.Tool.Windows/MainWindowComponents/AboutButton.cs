@@ -3,7 +3,6 @@
   using System.Windows;
   using SIM.Instances;
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Plugins;
   using SIM.Tool.Windows.Dialogs;
   using Sitecore.Diagnostics.Annotations;
 

@@ -90,67 +90,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomConverter.cs" />
-    <Compile Include="Dialogs\DatabaseQueryExecutionDialog.xaml.cs">
-      <DependentUpon>DatabaseQueryExecutionDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\DatabasesDialog.xaml.cs">
-      <DependentUpon>DatabasesDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\DatabasesOperationsDialog.xaml.cs">
-      <DependentUpon>DatabasesOperationsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\RestoreDatabaseDialog.xaml.cs">
-      <DependentUpon>RestoreDatabaseDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindowComponents\AboutButton.cs" />
     <Compile Include="MainWindowComponents\AttachDebuggerButton.cs" />
-    <Compile Include="MainWindowComponents\BackupInstanceButton.cs" />
     <Compile Include="MainWindowComponents\BrowseButton.cs" />
     <Compile Include="MainWindowComponents\CollectMemoryDumpButton.cs" />
     <Compile Include="MainWindowComponents\ConfigBuilderButton.cs" />
     <Compile Include="MainWindowComponents\ControlAppPoolButton.cs" />
-    <Compile Include="MainWindowComponents\DatabaseManagerButton.cs" />
-    <Compile Include="MainWindowComponents\DeleteInstanceButton.cs" />
-    <Compile Include="MainWindowComponents\Download8Button.cs" />
-    <Compile Include="MainWindowComponents\DownloadButton.cs" />
-    <Compile Include="MainWindowComponents\ExportInstanceButton.cs" />
-    <Compile Include="MainWindowComponents\ImportInstanceButton.cs" />
-    <Compile Include="MainWindowComponents\InstallInstanceButton.cs" />
-    <Compile Include="MainWindowComponents\InstallModulesButton.cs" />
-    <Compile Include="MainWindowComponents\InstallMongoDb.cs" />
     <Compile Include="MainWindowComponents\KillAllButThisButton.cs" />
     <Compile Include="MainWindowComponents\LoginAdminButton.cs" />
     <Compile Include="MainWindowComponents\ManagedArgsTracerButton.cs" />
-    <Compile Include="MainWindowComponents\MultipleDeletionButton.cs" />
     <Compile Include="MainWindowComponents\OpenCurrentLogButton.cs" />
     <Compile Include="MainWindowComponents\OpenFileButton.cs" />
     <Compile Include="MainWindowComponents\OpenFolderButton.cs" />
     <Compile Include="MainWindowComponents\OpenHostsButton.cs" />
     <Compile Include="MainWindowComponents\OpenLogsButton.cs" />
     <Compile Include="MainWindowComponents\OpenSSPGButton.cs" />
-    <Compile Include="MainWindowComponents\OpenToolboxButton.cs" />
-    <Compile Include="MainWindowComponents\OpenVisualStudioButton.cs" />
     <Compile Include="MainWindowComponents\OpenWebConfigButton.cs" />
-    <Compile Include="MainWindowComponents\PluginsButton.cs" />
-    <Compile Include="MainWindowComponents\PublishButton.cs" />
     <Compile Include="MainWindowComponents\RecycleAllButThisButton.cs" />
     <Compile Include="MainWindowComponents\RefreshButton.cs" />
-    <Compile Include="MainWindowComponents\ReinstallInstanceButton.cs" />
-    <Compile Include="MainWindowComponents\RestoreInstanceButton.cs" />
     <Compile Include="MainWindowComponents\SettingsButton.cs" />
     <Compile Include="MainWindowComponents\UpdateLicenseButton.cs" />
-    <Compile Include="Pipelines\Agreement\AcceptAgreement.cs" />
-    <Compile Include="Pipelines\Download\DownloadArgs.cs" />
-    <Compile Include="Pipelines\Download\DownloadProcessor.cs" />
-    <Compile Include="Pipelines\Download\GetPackageFileNamesProcessor.cs" />
-    <Compile Include="Pipelines\Download8\Download8Args.cs" />
-    <Compile Include="Pipelines\Download8\DownloadProcessor.cs" />
-    <Compile Include="Pipelines\FinishActions.cs" />
-    <Compile Include="Pipelines\Install\InstallActions.cs" />
-    <Compile Include="Pipelines\Install\InstallModulesFinishActionHive.cs" />
-    <Compile Include="Pipelines\Setup\SetupArgs.cs" />
-    <Compile Include="Pipelines\Setup\SetupProcessor.cs" />
-    <Compile Include="Pipelines\Setup\SetupWizardArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -164,96 +123,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="PublishMode.cs" />
     <Compile Include="StateToVisibility.cs" />
     <Compile Include="TreeViewItemExtensions.cs" />
-    <Compile Include="UserControls\Backup\BackupSettings.xaml.cs">
-      <DependentUpon>BackupSettings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Backup\BackupSettingsWizardArgs.cs" />
-    <Compile Include="UserControls\Backup\ChooseBackup.xaml.cs">
-      <DependentUpon>ChooseBackup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\ConfirmStepUserControl.xaml.cs">
-      <DependentUpon>ConfirmStepUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Download\Downloads.xaml.cs">
-      <DependentUpon>Downloads.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Download\DownloadWizardArgs.xaml.cs" />
-    <Compile Include="UserControls\Download\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Download\ProductDownloadInCheckbox.cs" />
-    <Compile Include="UserControls\Download8\Downloads.xaml.cs">
-      <DependentUpon>Downloads.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Download8\DownloadWizardArgs.xaml.cs" />
-    <Compile Include="UserControls\Download8\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Download8\ProductDownload8InCheckbox.cs" />
-    <Compile Include="UserControls\Export\ExportDatabases.xaml.cs">
-      <DependentUpon>ExportDatabases.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Export\ExportFile.xaml.cs">
-      <DependentUpon>ExportFile.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Export\ExportWizardArgs.cs" />
-    <Compile Include="UserControls\Export\FinishActions.cs" />
-    <Compile Include="UserControls\Import\ImportWebsite.xaml.cs">
-      <DependentUpon>ImportWebsite.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Import\ImportWizardArgs.cs" />
-    <Compile Include="UserControls\Import\SetWebsiteBindings.xaml.cs">
-      <DependentUpon>SetWebsiteBindings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Install\InstanceDetails.xaml.cs">
-      <DependentUpon>InstanceDetails.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Install\Modules\ConfigurationPackages.xaml.cs">
-      <DependentUpon>ConfigurationPackages.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Install\Modules\FilePackages.xaml.cs">
-      <DependentUpon>FilePackages.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Install\Modules\ModulesDetails.xaml.cs">
-      <DependentUpon>ModulesDetails.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Install\Modules\ProductInCheckbox.cs" />
-    <Compile Include="UserControls\Install\Modules\ReorderPackages.xaml.cs">
-      <DependentUpon>ReorderPackages.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\MultipleDeletion\MultipleDeletionWizardArgs.cs" />
-    <Compile Include="UserControls\MultipleDeletion\SelectInstances.xaml.cs">
-      <DependentUpon>SelectInstances.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Setup\ConnectionString.xaml.cs">
-      <DependentUpon>ConnectionString.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Setup\InstancesRoot.xaml.cs">
-      <DependentUpon>InstancesRoot.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Setup\LocalRepository.xaml.cs">
-      <DependentUpon>LocalRepository.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\Setup\Permissions.xaml.cs">
-      <DependentUpon>Permissions.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\AdvancedSettingsDialog.xaml.cs">
       <DependentUpon>AdvancedSettingsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\ConnectionStringDialog.xaml.cs">
-      <DependentUpon>ConnectionStringDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\PluginsDialog.xaml.cs">
-      <DependentUpon>PluginsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SettingsDialog.xaml.cs">
-      <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -271,96 +147,6 @@
     <EmbeddedResource Include="Log Analyzer.zip" />
     <EmbeddedResource Include="ManagedArgsTracer.zip" />
     <EmbeddedResource Include="ManagedGcAwareDump.zip" />
-    <Content Include="Configurations\Configuration - Sitecore 8 - Development - Disable Event Queue.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="Packages\Support Toolbox.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Resource Include="Configurations\Configuration - Sitecore 6 - DMS - Dedicated CD mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Configurations\Configuration - Sitecore 6 - DMS - Dedicated CM mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Configurations\Configuration - Sitecore 7.5 - xDB - Dedicated CD mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - DMS - Dedicated CD mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - DMS - Dedicated CM mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - DMS - Disable Robots Detection.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Disable Custom Errors.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Enable DEBUG Logging.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Enable Events Timing Level High.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Enable Pipeline Profiling.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Enable Publish Logging.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Unlimited SQL Timeout.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - Dedicated CD mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - Dedicated CM mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - Main CM mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6.6 - DMS - Enable MVC.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6.6 - Enable MVC.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - Dedicated CD mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - Dedicated CM mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - Disable ContentSearch.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7.0 - DMS - Enable MVC.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7.0 - Enable MVC.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7.5 - xDB - Dedicated CD mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 8 - ContentSearch - Disable Crawlers.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 8 - Disable ContentSearch.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - DMS - Dedicated CM mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - DMS - Dedicated CD mode.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 8 - Development - Initialize Speed Booster.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <Resource Include="Images\16\astrologer.png" />
     <Resource Include="Images\16\chrome.png" />
@@ -407,7 +193,6 @@
     <Resource Include="Images\24\package_edit.png" />
     <Resource Include="Images\24\Paint.png" />
     <Resource Include="Images\24\Pencil.png" />
-    <Resource Include="Images\24\publish.png" />
     <Resource Include="Images\24\redo.png" />
     <Resource Include="Images\24\scroll_refresh.png" />
     <Resource Include="Images\24\Sitecore.png" />
@@ -437,18 +222,6 @@
     <Resource Include="Images\24\atom2.png" />
     <Resource Include="Images\32\atom2.png" />
     <Resource Include="Images\48\atom2.png" />
-    <Content Include="Packages\DMS - Fix Integrity.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Packages\EAS - Simple Plan-1.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Packages\EAS - Simple Plan-2.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Packages\Sample Item with Sitecore MVC Presentation-1.0.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\16\add_domain.png" />
     <Resource Include="Images\16\box_into.png" />
     <Resource Include="Images\16\box_out.png" />
@@ -481,7 +254,6 @@
     <Resource Include="Images\16\note_warning.png" />
     <Resource Include="Images\16\Paint.png" />
     <Resource Include="Images\16\Pencil.png" />
-    <Resource Include="Images\16\publish.png" />
     <Resource Include="Images\16\redo.png" />
     <Resource Include="Images\16\refresh.png" />
     <Resource Include="Images\16\safari.png" />
@@ -529,7 +301,6 @@
     <Resource Include="Images\32\package_edit.png" />
     <Resource Include="Images\32\Paint.png" />
     <Resource Include="Images\32\Pencil.png" />
-    <Resource Include="Images\32\publish.png" />
     <Resource Include="Images\32\redo.png" />
     <Resource Include="Images\32\refresh.png" />
     <Resource Include="Images\32\safari.png" />
@@ -574,7 +345,6 @@
     <Resource Include="Images\48\package_edit.png" />
     <Resource Include="Images\48\Paint.png" />
     <Resource Include="Images\48\Pencil.png" />
-    <Resource Include="Images\48\publish.png" />
     <Resource Include="Images\48\redo.png" />
     <Resource Include="Images\48\refresh.png" />
     <Resource Include="Images\48\safari.png" />
@@ -586,129 +356,12 @@
     <Resource Include="Images\48\upload.png" />
     <Resource Include="Images\48\wrench.png" />
     <Resource Include="Images\48\zoom_vertical.png" />
-    <Resource Include="Packages\Support Toolbox.manifest.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Packages\Visual Studio 2012 MVC 4 Website Project.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Packages\Visual Studio 2012 MVC Website Project.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Packages\Visual Studio 2012 Website Project.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </Content>
-    <Content Include="WizardPipelines.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Dialogs\DatabaseQueryExecutionDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\DatabasesDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\DatabasesOperationsDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\RestoreDatabaseDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Install\Modules\ConfigurationPackages.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Setup\Permissions.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Setup\LocalRepository.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Setup\InstancesRoot.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Setup\ConnectionString.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\MultipleDeletion\SelectInstances.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Install\Modules\ReorderPackages.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Install\Modules\ModulesDetails.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Install\Modules\FilePackages.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Install\InstanceDetails.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Import\SetWebsiteBindings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Import\ImportWebsite.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Export\ExportFile.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Export\ExportDatabases.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Download\Login.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Download\Downloads.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Download8\Login.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Download8\Downloads.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\ConfirmStepUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Backup\ChooseBackup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\Backup\BackupSettings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Dialogs\AboutDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -720,24 +373,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Dialogs\AdvancedSettingsDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Dialogs\ConnectionStringDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Dialogs\PluginsDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Dialogs\SettingsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -769,89 +404,19 @@
       <Project>{CA40C57A-EF4F-474D-BE8B-98E51AE62C1F}</Project>
       <Name>SIM.Adapters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SIM.Products\SIM.Products.csproj">
-      <Project>{BC8B4EE5-C053-42E1-A5BA-07F8C41915A9}</Project>
-      <Name>SIM.Products</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SIM.Instances\SIM.Instances.csproj">
       <Project>{CCA7B157-A743-4A5A-A03B-B6B27CB2BE1C}</Project>
       <Name>SIM.Instances</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SIM.Pipelines\SIM.Pipelines.csproj">
-      <Project>{7A3FEDF8-DF96-4426-AA01-C2D4FD3E68C8}</Project>
-      <Name>SIM.Pipelines</Name>
     </ProjectReference>
     <ProjectReference Include="..\SIM.Tool.Base\SIM.Tool.Base.csproj">
       <Project>{EF380B2A-1171-4A9F-96D0-176ABA6CAD74}</Project>
       <Name>SIM.Tool.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SIM.Tool.Wizards\SIM.Tool.Wizards.csproj">
-      <Project>{E67BF633-2709-4106-A984-DE811CE8C689}</Project>
-      <Name>SIM.Tool.Wizards</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Sitecore.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Packages\Visual Studio 2012 MVC 4 Website Project.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Packages\Visual Studio 2012 MVC Website Project.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Packages\Visual Studio 2012 Website Project.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Configurations\Configuration - Sitecore 7 - DMS - Dedicated CD mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - DMS - Dedicated CM mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Disable Custom Errors.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Enable DEBUG Logging.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - General - Enable Publish Logging.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - Dedicated CD mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6 - Dedicated CM mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6.6 - DMS - Enable MVC.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 6.6 - Enable MVC.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - Dedicated CD mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7 - Dedicated CM mode.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7.0 - DMS - Enable MVC.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\Configuration - Sitecore 7.0 - Enable MVC.manifest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Plugins\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

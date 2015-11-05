@@ -4,9 +4,11 @@ namespace SIM.Tool.Windows
   using System.Globalization;
   using System.Windows.Data;
   using SIM.Instances;
-  using SIM.Tool.Base.Plugins;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
+
+  using SIM.Tool.Base;
 
   public class CustomConverter : IValueConverter
   {

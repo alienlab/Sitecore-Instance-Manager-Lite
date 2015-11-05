@@ -6,7 +6,7 @@
   using System.Windows;
   using System.Windows.Input;
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Profiles;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 
@@ -26,9 +26,6 @@
         typeof(SIM.Tool.Base.AppSettings), 
         typeof(SIM.Tool.Windows.Properties.Settings), 
         typeof(SIM.Tool.Windows.WindowsSettings), 
-        typeof(SIM.Instances.InstanceManager.Settings), 
-        typeof(SIM.Pipelines.Install.Settings), 
-        typeof(SIM.Adapters.SqlServer.SqlServerManager.Settings), 
         typeof(WebRequestHelper.Settings)
       };
 
@@ -43,23 +40,7 @@
     #endregion
 
     #region Properties
-
-    [NotNull]
-    private Profile Profile
-    {
-      get
-      {
-        return (Profile)this.DataContext;
-      }
-
-      set
-      {
-        Assert.ArgumentNotNull(value, "value");
-
-        this.DataContext = value;
-      }
-    }
-
+    
     #endregion
 
     #region Methods
@@ -110,7 +91,6 @@
 
     private void SaveSettings()
     {
-      ProfileManager.SaveChanges(this.Profile);
       this.DialogResult = true;
       this.Close();
     }

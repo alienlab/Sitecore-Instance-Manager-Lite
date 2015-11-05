@@ -1,12 +1,9 @@
 ﻿namespace SIM.Tool.Windows.MainWindowComponents
 {
-  using System;
-  using System.Linq;
   using System.Windows;
   using SIM.Instances;
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Pipelines;
-  using SIM.Tool.Base.Plugins;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 
@@ -43,28 +40,6 @@
     #endregion
 
     #region Public methods
-
-    [UsedImplicitly]
-    public static void FinishAction([NotNull] InstallWizardArgs args)
-    {
-      Assert.ArgumentNotNull(args, "args");
-
-      var instance = args.Instance;
-      Assert.IsNotNull(instance, "instance");
-
-      InstanceHelperEx.OpenInBrowserAsAdmin(instance, MainWindow.Instance);
-    }
-
-    [UsedImplicitly]
-    public static void FinishAction([NotNull] InstallModulesWizardArgs args)
-    {
-      Assert.ArgumentNotNull(args, "args");
-
-      var instance = args.Instance;
-      Assert.IsNotNull(instance, "instance");
-
-      InstanceHelperEx.OpenInBrowserAsAdmin(instance, MainWindow.Instance);
-    }
 
     public bool IsEnabled([CanBeNull] Window mainWindow, Instance instance)
     {

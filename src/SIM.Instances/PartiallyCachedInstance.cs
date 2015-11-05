@@ -31,37 +31,7 @@
     #endregion
 
     #region Constructors
-
-    public PartiallyCachedInstance(int id) : base(id)
-    {
-      var path = this.WebRootPath;
-      if (!File.Exists(path))
-      {
-        return;
-      }
-
-      var webConfig = new FileSystemWatcher(path, "web.config");
-      this.webConfigWatcher = webConfig;
-      webConfig.IncludeSubdirectories = false;
-      webConfig.Changed += this.ClearCache;
-      webConfig.EnableRaisingEvents = true;
-      var appConfigPath = Path.Combine(path, "App_Config");
-      if (!Directory.Exists(appConfigPath))
-      {
-        return;
-      }
-
-      var appConfig = new FileSystemWatcher(appConfigPath, "*.config");
-      this.appConfigWatcher = appConfig;
-      appConfig.IncludeSubdirectories = true;
-      appConfig.Changed += this.ClearCache;
-      appConfig.EnableRaisingEvents = true;
-    }
-
-    public PartiallyCachedInstance(Instance instance) : this((int)instance.ID)
-    {
-    }
-
+    
     #endregion
 
     #region Public Properties
@@ -79,14 +49,6 @@
       get
       {
         return this.name ?? (this.name = base.Name);
-      }
-    }
-
-    public override string ProductFullName
-    {
-      get
-      {
-        return this.productFullName ?? (this.productFullName = base.ProductFullName);
       }
     }
 

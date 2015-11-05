@@ -3,15 +3,16 @@
   using System;
   using System.ComponentModel;
   using System.IO;
+  using System.Linq;
   using System.Threading;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Input;
   using System.Windows.Threading;
-  using SIM.Products;
+  using System.Xml;
+
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Plugins;
-  using SIM.Tool.Windows.MainWindowComponents;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 
@@ -40,11 +41,6 @@
       using (new ProfileSection("Main window ctor", typeof(MainWindow)))
       {
         Instance = this;
-        if (WindowsSettings.AppUiMainWindowWidth.Value <= 0)
-        {
-          this.MaxWidth = this.MinWidth;
-        }
-
         this.Title = string.Format(this.Title, ApplicationManager.AppShortVersion, ApplicationManager.AppLabel);
 
         this.timer =
@@ -63,8 +59,59 @@
     {
       get
       {
-        return this.doubleClickHandler ?? (this.doubleClickHandler = (IMainWindowButton)WindowsSettings.AppUiMainWindowDoubleClick.Value.With(x => Plugin.CreateInstance(x)));
+        return this.doubleClickHandler ?? (this.doubleClickHandler = (IMainWindowButton)WindowsSettings.AppUiMainWindowDoubleClick.Value.With(x => CreateInstance(x)));
       }
+    }
+    public static object CreateInstance(XmlElement element)
+    {
+      var typeFullName = element.GetAttribute("type");
+      if (string.IsNullOrEmpty(typeFullName))
+      {
+        return null;
+      }
+
+      var param = element.GetAttribute("param");
+      return CreateInstance(typeFullName, element.Name, param.EmptyToNull());
+    }
+
+    public static object CreateInstance(string typeFullName, string reference = null, string param = null)
+    {
+      var type = GetType(typeFullName, reference);
+
+      if (!string.IsNullOrEmpty(param))
+      {
+        return ReflectionUtil.CreateObject(type, param);
+      }
+
+      return ReflectionUtil.CreateObject(type);
+    }
+
+    public static Type GetType(string typeFullName, string reference = null)
+    {
+      // locate type within already loaded assemblies
+      Type type = Type.GetType(typeFullName);
+
+      // type was not found so we need to load necessary assemlby
+      if (type == null)
+      {
+        var arr = typeFullName.Split(',');
+        Assert.IsTrue(arr.Length <= 2,
+          string.IsNullOrEmpty(reference) ? "Wrong type identifier (no comma), must be like Namespace.Type, Assembly" : "The type attribute value of the <{0}> element has wrong format".FormatWith(reference));
+
+        // format: type, assembly
+        var typeName = arr[0].Trim();
+        var assemblyName = arr[1].Trim();
+
+        // find the assembly file by specified assembly name
+        var assembly =
+          AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(ass => ass.FullName.StartsWith(assemblyName + ","));
+        Assert.IsNotNull(assembly, "Cannot find the {0} assembly".FormatWith(assemblyName));
+
+        type = assembly.GetType(typeName);
+        Assert.IsNotNull(type, "Cannot locate the {0} type within the {1} assembly".FormatWith(typeFullName, assemblyName));
+      }
+
+      return type;
     }
 
     #endregion
@@ -84,42 +131,11 @@
 
       return FileSystem.FileSystem.Local.File.ReadAllText(path);
     }
-
-    private void AnalyticsTracking()
-    {
-      if (this.DoNotTrack())
-      {
-        return;
-      }
-
-      var id = this.GetId();
-      var ver = ApplicationManager.AppVersion.EmptyToNull() ?? "dev";
-
-      this.Dispatcher.Invoke(new Action(() =>
-      {
-        try
-        {
-          var wb = new System.Windows.Forms.WebBrowser
-          {
-            ScriptErrorsSuppressed = true
-          };
-
-          var url = string.Format("https://bitbucket.org/alienlab/sitecore-instance-manager/wiki/Tracking?version={0}&id={1}", ver, id);
-
-          wb.Navigate(url, null, null, "User-Agent: Sitecore Instance Manager");
-        }
-        catch (Exception ex)
-        {
-          Log.Error("Failed to update statistics internal identifier", this, ex);
-        }
-      }));
-    }
-
+    
     private void AppPoolRecycleClick(object sender, RoutedEventArgs e)
     {
       try
       {
-        if (this.CheckSqlServer())
         {
           MainWindowHelper.AppPoolRecycle();
         }
@@ -134,7 +150,6 @@
     {
       try
       {
-        if (this.CheckSqlServer())
         {
           MainWindowHelper.AppPoolStart();
         }
@@ -149,63 +164,12 @@
     {
       try
       {
-        if (this.CheckSqlServer())
-        {
-          MainWindowHelper.AppPoolStop();
-        }
+        MainWindowHelper.AppPoolStop();
       }
       catch (Exception ex)
       {
         this.HandleError(ex);
       }
-    }
-
-    private void ChangeAppPoolMode(object sender, RoutedEventArgs e)
-    {
-      try
-      {
-        if (this.CheckSqlServer())
-        {
-          MainWindowHelper.ChangeAppPoolMode((System.Windows.Controls.MenuItem)sender);
-        }
-      }
-      catch (Exception ex)
-      {
-        this.HandleError(ex);
-      }
-    }
-
-    private bool CheckSqlServer()
-    {
-      // disabled since not fixed yet
-      // return true;
-      return EnvironmentHelper.CheckSqlServer();
-    }
-
-    private bool DoNotTrack()
-    {
-      var path = Path.Combine(ApplicationManager.TempFolder, "donottrack.txt");
-
-      return FileSystem.FileSystem.Local.File.Exists(path);
-    }
-
-    private string GetId()
-    {
-      try
-      {
-        if (EnvironmentHelper.IsSitecoreMachine)
-        {
-          return "internal-" + Environment.MachineName + "/" + Environment.UserName;
-        }
-      }
-      catch (Exception ex)
-      {
-        Log.Warn("Failed to compute internal identifier", this, ex);
-      }
-
-      string cookie = GetCookie();
-
-      return string.Format("public-{0}", cookie);
     }
 
     private void HandleError(Exception exception)
@@ -217,10 +181,7 @@
     {
       try
       {
-        if (this.CheckSqlServer())
-        {
-          MainWindowHelper.OnInstanceSelected();
-        }
+        MainWindowHelper.OnInstanceSelected();
       }
       catch (Exception ex)
       {
@@ -243,64 +204,36 @@
         Key key = e.Key;
         switch (key)
         {
-          case Key.Delete:
-          {
-            if (this.CheckSqlServer())
-            {
-              new DeleteInstanceButton().OnClick(this, MainWindowHelper.SelectedInstance);
-            }
-
-            return;
-          }
-
-          case Key.F2:
-          {
-            if (this.CheckSqlServer())
-            {
-              // MainWindowHelper.Rename();
-            }
-
-            return;
-          }
-
           case Key.Escape:
-          {
-            if (string.IsNullOrEmpty(this.SearchTextBox.Text))
             {
-              // this.WindowState = WindowState.Minimized;
-            }
-
-            this.SearchTextBox.Text = string.Empty;
-            if (this.CheckSqlServer())
-            {
+              this.SearchTextBox.Text = string.Empty;
               MainWindowHelper.Search();
-            }
 
-            return;
-          }
-
-          case Key.F3:
-          {
-            this.InstanceList.ContextMenu.IsOpen = true;
-            return;
-          }
-
-          case Key.F5:
-          {
-            this.RefreshInstances();
-            return;
-          }
-
-          case Key.C:
-          {
-            if ((Keyboard.IsKeyToggled(Key.LeftCtrl) | Keyboard.IsKeyToggled(Key.RightCtrl)) && MainWindowHelper.SelectedInstance != null)
-            {
-              System.Windows.Clipboard.SetText(MainWindowHelper.SelectedInstance.Name);
               return;
             }
 
-            break;
-          }
+          case Key.F3:
+            {
+              this.InstanceList.ContextMenu.IsOpen = true;
+              return;
+            }
+
+          case Key.F5:
+            {
+              this.RefreshInstances();
+              return;
+            }
+
+          case Key.C:
+            {
+              if ((Keyboard.IsKeyToggled(Key.LeftCtrl) | Keyboard.IsKeyToggled(Key.RightCtrl)) && MainWindowHelper.SelectedInstance != null)
+              {
+                System.Windows.Clipboard.SetText(MainWindowHelper.SelectedInstance.Name);
+                return;
+              }
+
+              break;
+            }
         }
 
         e.Handled = false;
@@ -317,7 +250,6 @@
       {
         try
         {
-          if (this.CheckSqlServer())
           {
             if (this.DoubleClickHandler.IsEnabled(this, MainWindowHelper.SelectedInstance))
             {
@@ -377,7 +309,6 @@
     {
       try
       {
-        if (this.CheckSqlServer())
         {
           MainWindowHelper.Search();
         }
@@ -404,47 +335,45 @@
         switch (key)
         {
           case Key.Escape:
-          {
-            if (string.IsNullOrEmpty(this.SearchTextBox.Text))
             {
-              // this.WindowState = WindowState.Minimized;
-            }
+              if (string.IsNullOrEmpty(this.SearchTextBox.Text))
+              {
+                // this.WindowState = WindowState.Minimized;
+              }
 
-            this.SearchTextBox.Text = string.Empty;
-            if (this.CheckSqlServer())
-            {
-              MainWindowHelper.Search();
-            }
+              this.SearchTextBox.Text = string.Empty;
+              {
+                MainWindowHelper.Search();
+              }
 
-            return;
-          }
+              return;
+            }
 
           case Key.Enter:
-          {
-            if (this.CheckSqlServer())
             {
-              MainWindowHelper.Search();
-            }
+              {
+                MainWindowHelper.Search();
+              }
 
-            return;
-          }
+              return;
+            }
 
           case Key.F5:
-          {
-            this.RefreshInstances();
-            return;
-          }
-
-          default:
-          {
-            if (WindowsSettings.AppInstanceSearchEnabled.Value)
             {
-              this.timer.Change(TimeSpan.FromMilliseconds(WindowsSettings.AppInstanceSearchTimeout.Value), TimeSpan.FromMilliseconds(-1));
+              this.RefreshInstances();
+              return;
             }
 
-            e.Handled = false;
-            return;
-          }
+          default:
+            {
+              if (WindowsSettings.AppInstanceSearchEnabled.Value)
+              {
+                this.timer.Change(TimeSpan.FromMilliseconds(WindowsSettings.AppInstanceSearchTimeout.Value), TimeSpan.FromMilliseconds(-1));
+              }
+
+              e.Handled = false;
+              return;
+            }
         }
       }
       catch (Exception ex)
@@ -457,12 +386,9 @@
     {
       try
       {
-        if (this.CheckSqlServer())
         {
           MainWindowHelper.Initialize();
         }
-
-        new Action(this.AnalyticsTracking).BeginInvoke(null, null);
       }
       catch (Exception ex)
       {

@@ -5,9 +5,11 @@
   using System.Linq;
   using System.Windows;
   using SIM.Instances;
-  using SIM.Tool.Base.Plugins;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
+
+  using SIM.Tool.Base;
 
   [UsedImplicitly]
   public class KillAllButThisButton : IMainWindowButton
@@ -25,7 +27,7 @@
     {
       Assert.ArgumentNotNull(mainWindow, "mainWindow");
 
-      var instances = InstanceManager.PartiallyCachedInstances ?? InstanceManager.Instances;
+      var instances = InstanceManager.Instances;
       Assert.IsNotNull(instances, "instances");
 
       var otherInstances = instances.Where(x => x.ID != instance.ID);

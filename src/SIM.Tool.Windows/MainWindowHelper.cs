@@ -2,10 +2,8 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Data.SqlClient;
   using System.Diagnostics;
   using System.Linq;
-  using System.Threading;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Forms;
@@ -14,13 +12,8 @@
   using System.Xml;
   using Fluent;
   using SIM.Instances;
-  using SIM.Pipelines.Agent;
-  using SIM.Pipelines.Reinstall;
-  using SIM.Products;
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Plugins;
-  using SIM.Tool.Base.Profiles;
-  using SIM.Tool.Wizards;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 
@@ -59,25 +52,11 @@
       }
     }
 
-    public static void EnableRefreshButton(MainWindow mainWindow)
-    {
-      mainWindow.HomeTabRefreshGroup.IsEnabled = true;
-    }
-
     public static void Initialize()
     {
       using (new ProfileSection("Initialize main window", typeof(MainWindowHelper)))
       {
-        if (WindowsSettings.AppUiMainWindowWidth.Value > 0)
-        {
-          double d = WindowsSettings.AppUiMainWindowWidth.Value;
-          MainWindow.Instance.MaxWidth = Screen.PrimaryScreen.Bounds.Width;
-          MainWindow.Instance.Width = d;
-        }
-
         MainWindowHelper.RefreshInstances();
-        PluginManager.ExecuteMainWindowLoadedProcessors(MainWindow.Instance);
-        MainWindowHelper.RefreshInstaller();
       }
     }
 
@@ -98,64 +77,17 @@
 
             if (item.Name == "item")
             {
-              InitializeContextMenuItem(item, window.ContextMenu.Items, window, uri => Plugin.GetImage(uri, "App.xml"));
+              InitializeContextMenuItem(item, window.ContextMenu.Items, window, uri => GetImage(uri, "App.xml"));
             }
             else if (item.Name == "separator")
             {
               window.ContextMenu.Items.Add(new Separator());
             }
-            else if (item.Name == "plugins")
-            {
-              using (new ProfileSection("Fill in context menu by plugins", typeof(MainWindowHelper)))
-              {
-                foreach (var plugin in PluginManager.GetEnabledPlugins())
-                {
-                  using (new ProfileSection("Fill in context menu by plugin", typeof(MainWindowHelper)))
-                  {
-                    ProfileSection.Argument("plugin", plugin);
-
-                    try
-                    {
-                      var pluginMenuItems = plugin.PluginXmlDocument.SelectElements("/plugin/mainWindow/contextMenu/item");
-                      foreach (var menuItemElement in pluginMenuItems)
-                      {
-                        InitializeContextMenuItem(menuItemElement, window.ContextMenu.Items, window, plugin.GetImage);
-                      }
-                    }
-                    catch (Exception ex)
-                    {
-                      PluginManager.HandleError(plugin, ex);
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
     }
-
-    public static string InitializeInstallerUnsafe(Window window)
-    {
-      using (new ProfileSection("Initialize Installer (Unsafe)", typeof(MainWindowHelper)))
-      {
-        string message = null;
-        string localRepository = ProfileManager.Profile.LocalRepository;
-
-        try
-        {
-          ProductManager.Initialize(localRepository);
-        }
-        catch (Exception ex)
-        {
-          Log.Error("Installer failed to init. {0}".FormatWith(ex.Message), typeof(MainWindowHelper), ex);
-          message = ex.Message;
-        }
-
-        return message;
-      }
-    }
-
+    
     public static void InitializeRibbon(XmlDocument appDocument)
     {
       using (new ProfileSection("Initialize main window ribbon", typeof(MainWindowHelper)))
@@ -167,33 +99,7 @@
           foreach (var tabElement in tabs)
           {
             // Get Ribbon Tab to insert button to
-            InitializeRibbonTab(tabElement, window, uri => Plugin.GetImage(uri, "App.xml"));
-          }
-        }
-
-        // load plugins
-        using (new ProfileSection("Loading tabs from plugins", typeof(MainWindowHelper)))
-        {
-          foreach (var plugin in PluginManager.GetEnabledPlugins())
-          {
-            using (new ProfileSection("Loading tabs from plugin", typeof(MainWindowHelper)))
-            {
-              ProfileSection.Argument("plugin", plugin);
-
-              try
-              {
-                var tabs = plugin.PluginXmlDocument.SelectElements("/plugin/mainWindow/ribbon/tab");
-                foreach (var tabElement in tabs)
-                {
-                  // Get Ribbon Tab to insert button to
-                  InitializeRibbonTab(tabElement, window, plugin.GetImage);
-                }
-              }
-              catch (Exception ex)
-              {
-                PluginManager.HandleError(plugin, ex);
-              }
-            }
+            InitializeRibbonTab(tabElement, window, uri => GetImage(uri, "App.xml"));
           }
         }
 
@@ -221,21 +127,13 @@
       }
     }
 
-    public static bool IsInstallerReady()
+    public static ImageSource GetImage(string imageSource, string pluginFilePath)
     {
-      try
-      {
-        ProfileManager.Profile.Validate();
-        return true;
-      }
-      catch (Exception ex)
-      {
-        Log.Warn("An error occurred during checking if installer ready", typeof(MainWindowHelper), ex);
-
-        return false;
-      }
+      var arr = imageSource.Split(',');
+      Assert.IsTrue(arr.Length == 2, "The {0} file contains incorrect image source format \"{1}\" when the correct one is \"ImageFilePath, AssemblyName\"".FormatWith(pluginFilePath, imageSource));
+      return WindowHelper.GetImage(arr[0], arr[1]);
     }
-
+    
     public static void KillProcess(Instance instance = null)
     {
       instance = instance ?? SelectedInstance;
@@ -268,13 +166,6 @@
       WindowHelper.OpenFolder(Log.LogsFolder);
     }
 
-    public static void Publish(Instance instance, Window owner, PublishMode mode)
-    {
-      WindowHelper.LongRunningTask(
-        () => PublishAsync(instance), "Publish", 
-        owner, "Publish", "Publish 'en' language from 'master' to 'web' with mode " + mode);
-    }
-
     public static void RefreshCaches()
     {
       using (new ProfileSection("Refresh caching", typeof(MainWindowHelper)))
@@ -288,20 +179,7 @@
       using (new ProfileSection("Refresh everything", typeof(MainWindowHelper)))
       {
         CacheManager.ClearAll();
-        MainWindowHelper.RefreshInstaller();
         MainWindowHelper.RefreshInstances();
-      }
-    }
-
-    public static void RefreshInstaller()
-    {
-      using (new ProfileSection("Refresh installer", typeof(MainWindowHelper)))
-      {
-        var mainWindow = MainWindow.Instance;
-        DisableInstallButtons(mainWindow);
-        DisableRefreshButton(mainWindow);
-        WindowHelper.LongRunningTask(RefreshInstallerTask, "Initialization", mainWindow, "Scanning local repository to find supported product packages", "The supported product packages are *.zip files they could be Sitecore packages, standalone packages or regular archive files. For supported files it computes manifests with information how the files should be treated.\n\nThe very first time the operation may take quite a long time, or if you clicked Refresh -> Everything", true);
-        EnableRefreshButton(mainWindow);
       }
     }
 
@@ -313,8 +191,7 @@
         var tabIndex = mainWindow.MainRibbon.SelectedTabIndex;
         var instance = SelectedInstance;
         var name = instance != null ? instance.Name : null;
-        string instancesFolder = ProfileManager.Profile.InstancesFolder;
-        InstanceManager.Initialize(instancesFolder);
+        InstanceManager.Initialize();
         Search();
         if (string.IsNullOrEmpty(name))
         {
@@ -336,80 +213,15 @@
       }
     }
 
-    public static void ReinstallInstance([NotNull] Instance instance, Window owner, [NotNull] string license, [NotNull] SqlConnectionStringBuilder connectionString)
-    {
-      Assert.ArgumentNotNull(instance, "instance");
-      Assert.ArgumentNotNull(license, "license");
-      Assert.ArgumentNotNull(connectionString, "connectionString");
-
-      if (instance.IsSitecore)
-      {
-        Product product = instance.Product;
-        if (string.IsNullOrEmpty(product.PackagePath))
-        {
-          if (WindowHelper.ShowMessage("The {0} product isn't presented in your local repository. Would you like to choose the zip installation package?".FormatWith(instance.ProductFullName), MessageBoxButton.YesNo, MessageBoxImage.Stop) == MessageBoxResult.Yes)
-          {
-            string patt = instance.ProductFullName + ".zip";
-            OpenFileDialog fileBrowserDialog = new OpenFileDialog
-            {
-              Title = @"Choose installation package", 
-              Multiselect = false, 
-              CheckFileExists = true, 
-              Filter = patt + '|' + patt
-            };
-
-            if (fileBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-              product = Product.Parse(fileBrowserDialog.FileName);
-              if (string.IsNullOrEmpty(product.PackagePath))
-              {
-                WindowHelper.HandleError("SIM can't parse the {0} package".FormatWith(instance.ProductFullName), true, null, typeof(MainWindowHelper));
-                return;
-              }
-            }
-          }
-        }
-
-        if (string.IsNullOrEmpty(product.PackagePath))
-        {
-          return;
-        }
-
-        ReinstallArgs args;
-        try
-        {
-          args = new ReinstallArgs(instance, connectionString, license, SIM.Pipelines.Install.Settings.CoreInstallWebServerIdentity.Value);
-        }
-        catch (Exception ex)
-        {
-          WindowHelper.HandleError(ex.Message, false, ex, typeof(WindowHelper));
-          return;
-        }
-
-        var name = instance.Name;
-        WizardPipelineManager.Start("reinstall", owner, args, null, () => MainWindowHelper.MakeInstanceSelected(name));
-      }
-    }
-
     public static void SoftlyRefreshInstances()
     {
       using (new ProfileSection("Refresh instances (softly)", typeof(MainWindowHelper)))
       {
-        string instancesFolder = ProfileManager.Profile.InstancesFolder;
-        InstanceManager.InitializeWithSoftListRefresh(instancesFolder);
+        InstanceManager.InitializeWithSoftListRefresh();
         Search();
       }
     }
-
-    public static void UpdateInstallButtons(string message, MainWindow mainWindow)
-    {
-      mainWindow.HomeTabInstallGroup.IsEnabled = message == null;
-      EnableRefreshButton(mainWindow);
-      if (message != null)
-      {
-        WindowHelper.HandleError("Refresh failed ... " + message, false);
-      }
-    }
+    
 
     #endregion
 
@@ -548,7 +360,7 @@
           var menuHeader = menuItem.GetAttribute("label");
           var largeImage = menuItem.GetAttribute("largeImage");
           var menuIcon = string.IsNullOrEmpty(largeImage) ? null : getImage(largeImage);
-          var menuHandler = (IMainWindowButton)Plugin.CreateInstance(menuItem);
+          var menuHandler = (IMainWindowButton)CreateInstance(menuItem);
           Assert.IsNotNull(menuHandler, "model");
 
           var childrenButtons = splitButton.Tag as ICollection<KeyValuePair<string, IMainWindowButton>>;
@@ -596,6 +408,57 @@
       }
 
       return splitButton;
+    }
+    public static object CreateInstance(XmlElement element)
+    {
+      var typeFullName = element.GetAttribute("type");
+      if (string.IsNullOrEmpty(typeFullName))
+      {
+        return null;
+      }
+
+      var param = element.GetAttribute("param");
+      return CreateInstance(typeFullName, element.Name, param.EmptyToNull());
+    }
+
+    public static object CreateInstance(string typeFullName, string reference = null, string param = null)
+    {
+      var type = GetType(typeFullName, reference);
+
+      if (!string.IsNullOrEmpty(param))
+      {
+        return ReflectionUtil.CreateObject(type, param);
+      }
+
+      return ReflectionUtil.CreateObject(type);
+    }
+
+    public static Type GetType(string typeFullName, string reference = null)
+    {
+      // locate type within already loaded assemblies
+      Type type = Type.GetType(typeFullName);
+
+      // type was not found so we need to load necessary assemlby
+      if (type == null)
+      {
+        var arr = typeFullName.Split(',');
+        Assert.IsTrue(arr.Length <= 2,
+          string.IsNullOrEmpty(reference) ? "Wrong type identifier (no comma), must be like Namespace.Type, Assembly" : "The type attribute value of the <{0}> element has wrong format".FormatWith(reference));
+
+        // format: type, assembly
+        var typeName = arr[0].Trim();
+        var assemblyName = arr[1].Trim();
+
+        // find the assembly file by specified assembly name
+        var assembly =
+          AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(ass => ass.FullName.StartsWith(assemblyName + ","));
+        Assert.IsNotNull(assembly, "Cannot find the {0} assembly".FormatWith(assemblyName));
+
+        type = assembly.GetType(typeName);
+        Assert.IsNotNull(type, "Cannot locate the {0} type within the {1} assembly".FormatWith(typeFullName, assemblyName));
+      }
+
+      return type;
     }
 
     private static RibbonGroupBox GetRibbonGroup(string name, string tabName, string groupName, RibbonTabItem ribbonTab, MainWindow window)
@@ -651,7 +514,7 @@
         }
 
         // create handler
-        var mainWindowButton = (IMainWindowButton)Plugin.CreateInstance(menuItemElement);
+        var mainWindowButton = (IMainWindowButton)CreateInstance(menuItemElement);
 
         // create Context Menu Item
         var menuItem = new System.Windows.Controls.MenuItem
@@ -713,7 +576,7 @@
         try
         {
           // create handler
-          var mainWindowButton = (IMainWindowButton)Plugin.CreateInstance(button);
+          var mainWindowButton = (IMainWindowButton)CreateInstance(button);
 
 
           FrameworkElement ribbonButton;
@@ -915,10 +778,6 @@
     {
       using (new ProfileSection("Main window instance selected handler", typeof(MainWindowHelper)))
       {
-        if (SelectedInstance != null && MainWindow.Instance.HomeTab.IsSelected)
-        {
-          MainWindow.Instance.OpenTab.IsSelected = true;
-        }
       }
     }
 
@@ -965,7 +824,7 @@
       using (new ProfileSection("Main window search handler", typeof(MainWindowHelper)))
       {
         string searchPhrase = Invoke(w => w.SearchTextBox.Text.Trim());
-        IEnumerable<Instance> source = InstanceManager.PartiallyCachedInstances;
+        IEnumerable<Instance> source = InstanceManager.Instances;
         if (source == null)
         {
           return;
@@ -989,7 +848,7 @@
 
     private static bool IsInstanceMatch(Instance instance, string searchPhrase)
     {
-      return instance.Name.ContainsIgnoreCase(searchPhrase) || instance.ProductFullName.ContainsIgnoreCase(searchPhrase) || instance.Product.SearchToken.ContainsIgnoreCase(searchPhrase);
+      return instance.Name.ContainsIgnoreCase(searchPhrase);
     }
 
     #endregion
@@ -1023,17 +882,7 @@
     #endregion
 
     #region Private methods
-
-    private static void DisableInstallButtons(MainWindow mainWindow)
-    {
-      mainWindow.HomeTabInstallGroup.IsEnabled = false;
-    }
-
-    private static void DisableRefreshButton(MainWindow mainWindow)
-    {
-      mainWindow.HomeTabRefreshGroup.IsEnabled = false;
-    }
-
+      
     private static int GetListItemID(string value)
     {
       var itemCollection = MainWindow.Instance.InstanceList.Items;
@@ -1046,36 +895,6 @@
       }
 
       throw new ArgumentOutOfRangeException("There is no instance with {0} ID in the list".FormatWith(value));
-    }
-
-    private static void PublishAsync(Instance instance)
-    {
-      try
-      {
-        PublishAgentHelper.CopyAgentFiles(instance);
-        PublishAgentHelper.Publish(instance);
-      }
-      catch (ThreadAbortException)
-      {
-      }
-      catch (Exception ex)
-      {
-        WindowHelper.HandleError("An error occurred while publishing" + Environment.NewLine + ex.Message, true, ex, typeof(MainWindowHelper));
-      }
-      finally
-      {
-        AgentHelper.DeleteAgentFiles(instance);
-      }
-    }
-
-    private static void RefreshInstallerTask()
-    {
-      string message = InitializeInstallerUnsafe(MainWindow.Instance);
-      MainWindowHelper.Invoke((mainWindow) => MainWindowHelper.UpdateInstallButtons(message, mainWindow));
-      if (message != null)
-      {
-        WindowHelper.HandleError("Cannot find any installation package. " + message, false, null, typeof(MainWindowHelper));
-      }
     }
 
     #endregion

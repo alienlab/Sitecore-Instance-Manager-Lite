@@ -70,20 +70,9 @@
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\IsNotNullConverter.cs" />
     <Compile Include="Converters\IsNotNullOrEmptyAndDirectoryExists.cs" />
-    <Compile Include="Converters\Product.cs" />
-    <Compile Include="EnvironmentHelper.cs" />
+    <Compile Include="IMainWindowButton.cs" />
     <Compile Include="InstanceHelperEx.cs" />
     <Compile Include="LicenseUpdater.cs" />
-    <Compile Include="Plugins\IInitProcessor.cs" />
-    <Compile Include="Plugins\IMainWindowButton.cs" />
-    <Compile Include="Plugins\IMainWindowLoadedProcessor.cs" />
-    <Compile Include="Pipelines\InstallModulesWizardArgs.cs" />
-    <Compile Include="Pipelines\InstallWizardArgs.cs" />
-    <Compile Include="Pipelines\RestoreWizardArgs.cs" />
-    <Compile Include="Plugins\Plugin.cs" />
-    <Compile Include="Plugins\PluginManager.cs" />
-    <Compile Include="Profiles\Profile.cs" />
-    <Compile Include="Profiles\ProfileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -112,10 +101,6 @@
     <Compile Include="Windows\Dialogs\SelectDialog.xaml.cs">
       <DependentUpon>SelectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Wizards\ICustomButtonWizardStep.cs" />
-    <Compile Include="Wizards\IFlowControl.cs" />
-    <Compile Include="Wizards\IWizardStep.cs" />
-    <Compile Include="Wizards\WizardArgs.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -154,14 +139,6 @@
     <ProjectReference Include="..\SIM.Instances\SIM.Instances.csproj">
       <Project>{CCA7B157-A743-4A5A-A03B-B6B27CB2BE1C}</Project>
       <Name>SIM.Instances</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SIM.Products\SIM.Products.csproj">
-      <Project>{BC8B4EE5-C053-42E1-A5BA-07F8C41915A9}</Project>
-      <Name>SIM.Products</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SIM.Pipelines\SIM.Pipelines.csproj">
-      <Project>{7A3FEDF8-DF96-4426-AA01-C2D4FD3E68C8}</Project>
-      <Name>SIM.Pipelines</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

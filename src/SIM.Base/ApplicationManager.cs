@@ -25,9 +25,6 @@ namespace SIM
     #region Constants
 
     public const string AppDataRoot = @"%AppData%\Sitecore\Sitecore Instance Manager";
-    public const string DefaultConfigurations = "Configurations";
-    public const string DefaultPackages = "Packages";
-    public const string StockPlugins = "Plugins";
 
     #endregion
 
@@ -49,30 +46,13 @@ namespace SIM
     public static readonly string CachesFolder;
 
     [NotNull]
-    public static readonly string ConfigurationPackagesFolder;
-
-    [NotNull]
     public static readonly string DataFolder;
-
-    [NotNull]
-    public static readonly string FilePackagesFolder;
-
-    public static readonly bool IsDebugging;
 
     [NotNull]
     public static readonly string LogsFolder;
 
     [NotNull]
-    public static readonly string PluginsFolder;
-
-    [NotNull]
-    public static readonly string ProfilesFolder;
-
-    [NotNull]
     public static readonly string TempFolder;
-
-    [NotNull]
-    public static readonly string UserManifestsFolder;
 
     #endregion
 
@@ -81,18 +61,12 @@ namespace SIM
     static ApplicationManager()
     {
       DataFolder = InitializeFolder(Environment.ExpandEnvironmentVariables(AppDataRoot));
-      PluginsFolder = InitializeDataFolder("Plugins");
       CachesFolder = InitializeDataFolder("Caches");
-      FilePackagesFolder = InitializeDataFolder("Custom Packages");
-      ConfigurationPackagesFolder = InitializeDataFolder("Custom Configurations");
-      ProfilesFolder = InitializeDataFolder("Profiles");
       LogsFolder = InitializeDataFolder("Logs");
-      UserManifestsFolder = InitializeDataFolder("Manifests");
       AppRevision = GetRevision();
       AppVersion = GetVersion();
       AppShortVersion = GetShortVersion();
       AppLabel = GetLabel();
-      IsDebugging = Environment.GetCommandLineArgs()[0].ContainsIgnoreCase("vshost.exe");
       TempFolder = InitializeDataFolder("Temp");
     }
 

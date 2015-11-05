@@ -1,8 +1,10 @@
-﻿namespace SIM.Tool.Base.Plugins
+namespace SIM.Tool.Base
 {
   using System.Windows;
-  using SIM.Instances;
+
   using Sitecore.Diagnostics.Annotations;
+
+  using SIM.Instances;
 
   public interface IMainWindowButton
   {

@@ -4,7 +4,6 @@ namespace SIM.Tool.Base
   using System.Windows;
   using System.Windows.Forms;
   using SIM.Instances;
-  using SIM.Tool.Base.Profiles;
 
   public static class LicenseUpdater
   {
@@ -39,37 +38,17 @@ namespace SIM.Tool.Base
           instance = null;
         }
       }
-
-      string filePath = ProfileManager.Profile.License;
-
-      const string settings = "Definied in settings";
-      const string custom = "Another license file";
-      var options2 = new[]
+      var openDialog = new OpenFileDialog
       {
-        settings, custom
+        Filter = @"License files|*.xml"
       };
-      var result2 = WindowHelper.AskForSelection(Title, null, "Which license file would you like to use?", options2, mainWindow);
 
-      if (result2 == null)
+      if (openDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
       {
         return;
       }
 
-      if (result2 == custom)
-      {
-        var openDialog = new OpenFileDialog
-        {
-          Filter = @"License files|*.xml"
-        };
-
-        if (openDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-        {
-          return;
-        }
-
-        filePath = openDialog.FileName;
-      }
-
+      var filePath = openDialog.FileName;
 
       WindowHelper.LongRunningTask(() => DoUpdateLicense(filePath, instance), "Updating license...", mainWindow);
     }

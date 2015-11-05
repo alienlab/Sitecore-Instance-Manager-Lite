@@ -8,11 +8,10 @@
   using System.Xml.Schema;
   using System.Xml.Serialization;
   using Microsoft.Web.Administration;
-  using SIM.Adapters.MongoDb;
-  using SIM.Adapters.SqlServer;
+
   using SIM.Adapters.WebServer;
   using SIM.Instances.RuntimeSettings;
-  using SIM.Products;
+
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 
@@ -42,8 +41,6 @@
 
     protected RuntimeSettingsAccessor runtimeSettingsAccessor;
     private InstanceConfiguration configuration;
-
-    private Product product;
 
     #endregion
 
@@ -78,30 +75,6 @@
     #region Public Properties
 
     #region Public properties
-
-    public virtual ICollection<Database> AttachedDatabases
-    {
-      get
-      {
-        return this.GetAttachedDatabases();
-      }
-    }
-
-    public virtual IEnumerable<InstanceBackup> Backups
-    {
-      get
-      {
-        return this.GetBackups();
-      }
-    }
-
-    public virtual string BackupsFolder
-    {
-      get
-      {
-        return this.GetBackupsFolder();
-      }
-    }
 
     [NotNull]
     public virtual InstanceConfiguration Configuration
@@ -199,14 +172,6 @@
       }
     }
 
-    public ICollection<MongoDbDatabase> MongoDatabases
-    {
-      get
-      {
-        return this.GetMongoDatabases();
-      }
-    }
-
     [CanBeNull]
     public virtual string PackagesFolderPath
     {
@@ -233,33 +198,7 @@
         }
       }
     }
-
-    [NotNull]
-    public virtual Product Product
-    {
-      get
-      {
-        return this.product ?? (this.product = ProductManager.GetProduct(this.ProductFullName));
-      }
-    }
-
-    [NotNull]
-    public virtual string ProductFullName
-    {
-      get
-      {
-        return ProductHelper.DetectProductFullName(this.WebRootPath);
-      }
-    }
-
-    public virtual string RootPath
-    {
-      get
-      {
-        return this.GetRootPath();
-      }
-    }
-
+    
     [CanBeNull]
     public virtual string SerializationFolderPath
     {
@@ -326,26 +265,6 @@
       }
     }
 
-    public virtual IEnumerable<string> VisualStudioSolutionFiles
-    {
-      get
-      {
-        return this.GetVisualStudioSolutionFiles();
-      }
-    }
-
-    #endregion
-
-    #region Private methods
-
-    private ICollection<MongoDbDatabase> GetMongoDatabases()
-    {
-      using (new ProfileSection("Get mongo databases", this))
-      {
-        return this.RuntimeSettingsAccessor.GetMongoDatabases();
-      }
-    }
-
     #endregion
 
     #endregion
@@ -390,7 +309,7 @@
     {
       get
       {
-        return string.Format("{0} ({1})", base.ToString(), this.ProductFullName);
+        return string.Format("{0}", base.ToString());
       }
     }
 
@@ -418,7 +337,7 @@
       get
       {
         // TODO: replace with modules detector implemenation
-        var modulesNames = Directory.GetFiles(this.PackagesFolderPath, "*.zip").Select(x => ProductManager.GetProduct(x)).Where(x => x != Product.Undefined).Select(x => x.Name.TrimStart("Sitecore "));
+        var modulesNames = Directory.GetFiles(this.PackagesFolderPath, "*.zip").Select(x => Path.GetFileNameWithoutExtension(x.TrimStart("Sitecore ")));
         return (string.Join(", ", modulesNames) + (File.Exists(Path.Combine(this.WebRootPath, "App_Config\\Include\\Sitecore.Analytics.config")) ? ", DMS" : string.Empty)).TrimStart(" ,".ToCharArray());
       }
     }
@@ -426,18 +345,6 @@
     #endregion
 
     #region Public methods
-
-    [NotNull]
-    public virtual string GetBackupFolder(string name)
-    {
-      string backups = this.GetBackupsFolder();
-      return Path.Combine(backups, name);
-    }
-
-    public virtual Instance GetCachedInstance()
-    {
-      return new PartiallyCachedInstance(this);
-    }
 
     [NotNull]
     public virtual XmlDocument GetShowconfig(bool normalize = false)
@@ -449,16 +356,6 @@
         return this.RuntimeSettingsAccessor.GetShowconfig(normalize);
       }
     }
-
-    [CanBeNull]
-    public virtual IEnumerable<string> GetVisualStudioSolutionFiles(string searchPattern = null)
-    {
-      var rootPath = this.RootPath;
-      var webRootPath = this.WebRootPath;
-      return VisualStudioHelper.GetVisualStudioSolutionFiles(rootPath, webRootPath, searchPattern).ToArray();
-    }
-
-    [NotNull]
     public virtual XmlDocument GetWebResultConfig(bool normalize = false)
     {
       using (new ProfileSection("Get web.config.result.xml config", this))
@@ -499,60 +396,6 @@
     #region Protected methods
 
     [NotNull]
-    protected virtual ICollection<Database> GetAttachedDatabases()
-    {
-      using (new ProfileSection("Get attached databases", this))
-      {
-        return this.RuntimeSettingsAccessor.GetDatabases();
-      }
-    }
-
-    [CanBeNull]
-    protected virtual IEnumerable<InstanceBackup> GetBackups()
-    {
-      var root = this.SafeCall(this.GetBackupsFolder);
-      if (string.IsNullOrEmpty(root) || !FileSystem.FileSystem.Local.Directory.Exists(root))
-      {
-        yield break;
-      }
-
-      foreach (var child in FileSystem.FileSystem.Local.Directory.GetDirectories(root))
-      {
-        var childInfo = new DirectoryInfo(child);
-        var date = string.Format("\"{2}\", {0}, {1:hh:mm:ss tt}", childInfo.CreationTime.ToString("yyyy-MM-dd"), 
-          childInfo.CreationTime, childInfo.Name);
-
-        if (string.IsNullOrEmpty(date))
-        {
-          continue;
-        }
-
-        var backup = new InstanceBackup(date, child);
-        if (!FileSystem.FileSystem.Local.Directory.Exists(backup.DatabasesFolderPath) && !FileSystem.FileSystem.Local.Directory.Exists(backup.MongoDatabasesFolderPath) && !FileSystem.FileSystem.Local.File.Exists(backup.WebRootFilePath) &&
-            !FileSystem.FileSystem.Local.File.Exists(backup.WebRootNoClientFilePath))
-        {
-          continue;
-        }
-
-        yield return backup;
-      }
-    }
-
-    [NotNull]
-    protected virtual string GetBackupsFolder()
-    {
-      string rootPath = this.GetRootPath();
-      if (this.WebRootPath.EqualsIgnoreCase(rootPath))
-      {
-        DirectoryInfo parent = new DirectoryInfo(rootPath).Parent;
-        Assert.IsNotNull(parent, "Instance isn't permitted to use drive root as web root path");
-        return Path.Combine(parent.FullName, this.Name + " backups");
-      }
-
-      return Path.Combine(rootPath, "Backups");
-    }
-
-    [NotNull]
     protected virtual string GetDataFolderPath()
     {
       using (new ProfileSection("Get data folder path", this))
@@ -584,7 +427,7 @@
     {
       try
       {
-        return FileSystem.FileSystem.Local.File.Exists(ProductHelper.GetKernelPath(this.WebRootPath));
+        return FileSystem.FileSystem.Local.File.Exists(Path.Combine(this.WebRootPath, ""));
       }
       catch (Exception ex)
       {
@@ -616,113 +459,6 @@
           }
 
           throw new InvalidOperationException("Cannot get logs folder of " + this.WebRootPath, ex);
-        }
-      }
-    }
-
-    protected virtual string GetRootFolderViaDatabases(ICollection<Database> databases)
-    {
-      string webRootPath = this.WebRootPath;
-      using (new ProfileSection("Get root folder (using databases)", this))
-      {
-        ProfileSection.Argument("databases", databases);
-
-        foreach (var database in databases)
-        {
-          Log.Debug("Database: " + database);
-          string fileName = database.FileName;
-          if (string.IsNullOrEmpty(fileName))
-          {
-            Log.Warn(
-              "The {0} database seems to be detached since it doesn't have a FileName property filled in".FormatWith(
-                database.RealName), typeof(string));
-            continue;
-          }
-
-          Log.Debug(
-            "name: {0}, fileName: {1}".FormatWith(database.Name, fileName), 
-            typeof(Instance));
-          var folder = Path.GetDirectoryName(fileName);
-          if (folder.ContainsIgnoreCase(webRootPath))
-          {
-            continue;
-          }
-
-          Assert.IsNotNullOrEmpty(folder, "folder1");
-          var common = FileSystem.FileSystem.Local.Directory.FindCommonParent(webRootPath, folder);
-          if (string.IsNullOrEmpty(common))
-          {
-            continue;
-          }
-
-          if (Math.Abs(FileSystem.FileSystem.Local.Directory.GetDistance(webRootPath, common)) <= 1)
-          {
-            return ProfileSection.Result(common);
-          }
-        }
-
-        return ProfileSection.Result((string)null);
-      }
-    }
-
-    [NotNull]
-    protected virtual string GetRootPath()
-    {
-      using (new ProfileSection("Get instance's root path", this))
-      {
-        try
-        {
-          var webRootPath = this.WebRootPath;
-          string dataFolderPath = this.GetDataFolderPath();
-          Assert.IsNotNullOrEmpty(dataFolderPath, "dataFolderPath");
-
-          // data folder is inside website folder
-          if (dataFolderPath.ContainsIgnoreCase(this.WebRootPath))
-          {
-            // find using only databases
-            var result = this.GetRootFolderViaDatabases(this.GetAttachedDatabases()) ?? webRootPath;
-
-            return ProfileSection.Result(result);
-          }
-
-
-          // trying to detect using databases
-          var common = this.GetRootFolderViaDatabases(this.GetAttachedDatabases());
-          if (common != null)
-          {
-            return ProfileSection.Result(common);
-          }
-
-          // trying to detect via data folder
-          string detectedRoot = FileSystem.FileSystem.Local.Directory.FindCommonParent(webRootPath, dataFolderPath);
-
-          // if impossible
-          if (string.IsNullOrEmpty(detectedRoot))
-          {
-            return ProfileSection.Result(webRootPath);
-          }
-
-          InvalidConfigurationException.Assert(!webRootPath.ContainsIgnoreCase(dataFolderPath), 
-            "The data folder accidentally was set to be parent ({0}) of the website root folder ({1})".FormatWith(
-              dataFolderPath, webRootPath));
-          int distance = FileSystem.FileSystem.Local.Directory.GetDistance(webRootPath, detectedRoot);
-          InvalidConfigurationException.Assert(distance <= 1, 
-            "Cannot detect the Root Folder - the detection result ({1}) is too far from the Website ({0}) folder"
-              .FormatWith(this.WebRootPath, detectedRoot));
-
-          return ProfileSection.Result(detectedRoot);
-        }
-        catch (Exception ex)
-        {
-          var rootData = Path.GetDirectoryName(this.WebRootPath);
-          if (FileSystem.FileSystem.Local.Directory.Exists(rootData))
-          {
-            Log.Error("Cannot get root folder of " + this.WebRootPath, this, ex);
-
-            return rootData;
-          }
-
-          throw new InvalidOperationException("Cannot get root folder of " + this.WebRootPath, ex);
         }
       }
     }

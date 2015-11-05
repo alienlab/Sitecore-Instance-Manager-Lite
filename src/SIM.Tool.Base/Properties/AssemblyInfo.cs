@@ -8,7 +8,7 @@ using System.Windows;
 
 [assembly: AssemblyTitle("SIM.Tool.Base")]
 [assembly: AssemblyCompany("Sitecore Corporation")]
-[assembly: AssemblyProduct("Sitecore Instance Manager")]
+[assembly: AssemblyProduct("Sitecore Instance Manager Lite")]
 [assembly: AssemblyCopyright("Copyright © 2001-2014 Sitecore Corporation")]
 [assembly: AssemblyTrademark("Sitecore® is a registered trademark of Sitecore Corporation")]
 [assembly: AssemblyCulture("")]

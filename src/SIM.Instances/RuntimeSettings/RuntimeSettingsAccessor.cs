@@ -1,10 +1,8 @@
 ﻿namespace SIM.Instances.RuntimeSettings
 {
   using System;
-  using System.Collections.Generic;
   using System.Xml;
-  using SIM.Adapters.MongoDb;
-  using SIM.Adapters.SqlServer;
+
   using SIM.Adapters.WebServer;
   using Sitecore.Diagnostics.Annotations;
   using Sitecore.Diagnostics.ConfigBuilder;
@@ -42,34 +40,6 @@
     #endregion
 
     #region Public methods
-
-    public virtual ICollection<Database> GetDatabases()
-    {
-      try
-      {
-        var webConfigDocument = this.GetWebConfigResult();
-        var webRootPath = this.Instance.WebRootPath;
-        return WebConfig.GetDatabases(webRootPath, webConfigDocument);
-      }
-      catch (Exception ex)
-      {
-        throw new InvalidOperationException(string.Format("Failed to get databases of {0}", this.Instance.WebRootPath), ex);
-      }
-    }
-
-    public virtual ICollection<MongoDbDatabase> GetMongoDatabases()
-    {
-      try
-      {
-        var webConfigDocument = this.GetWebConfigResult();
-        var webRootPath = this.Instance.WebRootPath;
-        return WebConfig.GetMongoDatabases(webRootPath, webConfigDocument);
-      }
-      catch (Exception ex)
-      {
-        throw new InvalidOperationException(string.Format("Failed to get mongo databases of {0}", this.Instance.WebRootPath), ex);
-      }
-    }
 
     public virtual XmlElement GetScVariableElement([NotNull] string elementName)
     {

@@ -382,22 +382,22 @@
 
     public static MessageBoxResult ShowMessage(string message)
     {
-      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager");
+      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager Lite");
     }
 
     public static MessageBoxResult ShowMessage(string message, MessageBoxButton messageBoxButton, MessageBoxImage messageBoxImage)
     {
-      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager", messageBoxButton, messageBoxImage);
+      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager Lite", messageBoxButton, messageBoxImage);
     }
 
     public static MessageBoxResult ShowMessage(string message, string p, MessageBoxButton messageBoxButton, MessageBoxImage messageBoxImage)
     {
-      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager", messageBoxButton, messageBoxImage);
+      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager Lite", messageBoxButton, messageBoxImage);
     }
 
     public static MessageBoxResult ShowMessage(string message, MessageBoxButton messageBoxButton, MessageBoxImage messageBoxImage, MessageBoxResult messageBoxResult)
     {
-      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager", messageBoxButton, messageBoxImage, messageBoxResult);
+      return System.Windows.MessageBox.Show(message, "Sitecore Instance Manager Lite", messageBoxButton, messageBoxImage, messageBoxResult);
     }
 
     public static void ShowWindow([NotNull] Window window, [CanBeNull] Window owner)

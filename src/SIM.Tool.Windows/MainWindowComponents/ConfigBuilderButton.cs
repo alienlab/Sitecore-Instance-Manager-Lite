@@ -6,7 +6,7 @@
   using System.Windows;
   using SIM.Instances;
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Plugins;
+  
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 

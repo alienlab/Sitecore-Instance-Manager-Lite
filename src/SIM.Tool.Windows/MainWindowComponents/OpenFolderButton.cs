@@ -4,7 +4,7 @@
   using System.Windows;
   using SIM.Instances;
   using SIM.Tool.Base;
-  using SIM.Tool.Base.Plugins;
+  
   using Sitecore.Diagnostics;
   using Sitecore.Diagnostics.Annotations;
 
@@ -65,7 +65,6 @@
       }
 
       path = path
-        .Replace("$(root)", () => instance.RootPath)
         .Replace("$(website)", () => instance.WebRootPath)
         .Replace("$(data)", () => instance.DataFolderPath)
         .Replace("$(packages)", () => instance.PackagesFolderPath)
